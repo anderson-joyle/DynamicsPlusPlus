@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AxClass xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+	<Name>DPPFindFromParameter</Name>
+	<SourceCode>
+		<Declaration><![CDATA[
+public class DPPFindFromParameter extends DPPFindFrom
+{
+
+}
+]]></Declaration>
+		<Methods>
+			<Method>
+				<Name>find</Name>
+				<Source><![CDATA[
+    /// <summary>
+    ///
+    /// </summary>
+    /// <returns></returns>
+    public Common find()
+    {
+        const Integer key = 0;
+
+        Common ret;
+
+        DictTable dictTable = new DictTable(tableId);
+        DictField dictField = new DictField(dictTable.id(), fieldName2Id(dictTable.id(), identifierStr(Key)));
+
+        Query    q = new Query();
+        QueryRun qr;
+
+        QueryBuildDataSource qds;
+
+        if (!dictField)
+        {
+            throw error(strFmt("Table %1 doesnt contain Key field.", dictTable.name()));
+        }
+
+        qds = q.addDataSource(tableId);
+        qds.addRange(dictField.id()).value(queryValue(key));
+
+        this.verbosing(strFmt("Field '%1' mapped to '%2' value.", dictField.name(), key));
+
+        if (SysQuery::countTotal(new QueryRun(q)) > 1)
+        {
+            throw error("Attempted to fetch more than one record.");
+        }
+
+        qr = new QueryRun(q);
+        qr.next();
+
+        ret = qr.get(tableId);
+
+        if (!ret.RecId)
+        {
+            Company::createParameter(ret);
+        }
+
+        return ret;
+    }
+
+]]></Source>
+			</Method>
+		</Methods>
+	</SourceCode>
+</AxClass>

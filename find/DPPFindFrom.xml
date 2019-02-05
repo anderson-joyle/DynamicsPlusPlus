@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AxClass xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+	<Name>DPPFindFrom</Name>
+	<SourceCode>
+		<Declaration><![CDATA[
+public class DPPFindFrom
+{
+    protected TableId tableId;
+
+    protected boolean verbose;
+
+}
+]]></Declaration>
+		<Methods>
+			<Method>
+				<Name>setTableId</Name>
+				<Source><![CDATA[
+    public void setTableId(TableId _tableId)
+    {
+        tableId = _tableId;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>setVerbose</Name>
+				<Source><![CDATA[
+    public void setVerbose(boolean _verbose)
+    {
+        verbose = _verbose;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>find</Name>
+				<Source><![CDATA[
+    public Common find()
+    {
+        return null;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>verbosing</Name>
+				<Source><![CDATA[
+    protected void verbosing(FreeTxt _message)
+    {
+        if (verbose)
+        {
+            info(_message);
+        }
+    }
+
+]]></Source>
+			</Method>
+		</Methods>
+	</SourceCode>
+</AxClass>

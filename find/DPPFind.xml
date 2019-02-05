@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AxClass xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+	<Name>DPPFind</Name>
+	<SourceCode>
+		<Declaration><![CDATA[
+public class DPPFind
+{
+    protected Common common;
+    protected Query  query;
+
+    protected IndexName    indexName;
+
+    protected boolean   verbose;
+    protected boolean   selectForUpdate;
+    protected container parms;
+    protected container fields;
+
+}
+]]></Declaration>
+		<Methods>
+			<Method>
+				<Name>get</Name>
+				<Source><![CDATA[
+    public Common get()
+    {
+        DictTable dictTable = new DictTable(this.parmCommon().TableId);
+
+        Common ret;
+
+        if (dictTable.tableGroup() == TableGroup::Parameter)
+        {
+            ret = this.getFromParameter();
+        }
+        else if (this.parmFields())
+        {
+            ret = this.getFromFields();
+        }
+        else if (this.parmIndex())
+        {
+            ret = this.getFromIndex();
+        }
+        else
+        {
+            throw error("Couldnt define next action.");
+        }
+
+        ret.selectForUpdate(this.parmSelectForUpdate());
+
+        return ret;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>getFromFields</Name>
+				<Source><![CDATA[
+    protected Common getFromFields()
+    {
+        DPPFindFromFields findFrom = new DPPFindFromFields();
+        Common ret;
+
+        findFrom.setTableId(this.parmCommon().TableId);
+        findFrom.setFields(this.parmFields());
+        findFrom.setParms(this.parmParms());
+        findFrom.setVerbose(this.parmVerbose());
+
+        return findFrom.find();
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>getFromParameter</Name>
+				<Source><![CDATA[
+    protected Common getFromParameter()
+    {
+        DPPFindFromParameter findFrom = new DPPFindFromParameter();
+        Common ret;
+
+        findFrom.setTableId(this.parmCommon().TableId);
+        findFrom.setVerbose(this.parmVerbose());
+
+        return findFrom.find();
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>getFromIndex</Name>
+				<Source><![CDATA[
+    protected Common getFromIndex()
+    {
+        DPPFindFromIndex findFrom = new DPPFindFromIndex();
+
+        findFrom.setTableId(this.parmCommon().TableId);
+        findFrom.setIndexId(indexName2Id(this.parmCommon().TableId, this.parmIndex()));
+        findFrom.setParms(this.parmParms());
+        findFrom.setVerbose(this.parmVerbose());
+
+        return findFrom.find();
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>fromRecId</Name>
+				<Source><![CDATA[
+    public DPPFind fromRecId(RecId _recId)
+    {
+        this.parmParms([_recid]);
+        this.parmFields([identifierStr(RecId)]);
+
+        return this;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>fromFields</Name>
+				<Source><![CDATA[
+    public DPPFind fromFields(container _fields, container _parms)
+    {
+        this.parmParms(_parms);
+        this.parmFields(_fields);
+
+        return this;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>fromPrimary</Name>
+				<Source><![CDATA[
+    public DPPFind fromPrimary(container _parms)
+    {
+        DictTable dictTable = new DictTable(this.parmCommon().TableId);
+        DictIndex dictIndex = new DictIndex(dictTable.id(), dictTable.primaryIndex());
+        
+        if (!dictIndex)
+        {
+            throw error(strFmt("Table %1 has no primary index assigned to it.", dictTable.name()));
+        }
+
+        this.parmParms(_parms);
+        this.parmIndex(dictIndex.name());
+
+        return this;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>verbose</Name>
+				<Source><![CDATA[
+    public DPPFind verbose(boolean _verbose)
+    {
+        this.parmVerbose(_verbose);
+
+        return this;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>selectForUpdate</Name>
+				<Source><![CDATA[
+    public DPPFind selectForUpdate(boolean _selectForUpdate)
+    {
+        this.parmSelectForUpdate(_selectForUpdate);
+
+        return this;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>fromIndex</Name>
+				<Source><![CDATA[
+    public DPPFind fromIndex(IndexName _indexeName, container _parms)
+    {
+        this.parmParms(_parms);
+        this.parmIndex(_indexeName);
+
+        return this;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>me</Name>
+				<Source><![CDATA[
+    public static DPPFind me(Common _common)
+    {
+        DPPFind find = new DPPFind();
+
+        find.parmCommon(_common);
+
+        return find;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>parmIndex</Name>
+				<Source><![CDATA[
+    protected IndexName parmIndex(IndexName _indexName = indexName)
+    {
+        indexName = _indexName;
+        return indexName;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>parmFields</Name>
+				<Source><![CDATA[
+    protected container parmFields(container _fields = fields)
+    {
+        fields = _fields;
+        return fields;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>parmParms</Name>
+				<Source><![CDATA[
+    protected container parmParms(container _parms = parms)
+    {
+        parms = _parms;
+        return parms;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>parmCommon</Name>
+				<Source><![CDATA[
+    protected Common parmCommon(Common _common = common)
+    {
+        common = _common;
+        return common;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>parmVerbose</Name>
+				<Source><![CDATA[
+    protected boolean parmVerbose(boolean _verbose = verbose)
+    {
+        verbose = _verbose;
+        return verbose;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>parmSelectForUpdate</Name>
+				<Source><![CDATA[
+    protected boolean parmSelectForUpdate(boolean _selectForUpdate = selectForUpdate)
+    {
+        selectForUpdate = _selectForUpdate;
+        return selectForUpdate;
+    }
+
+]]></Source>
+			</Method>
+		</Methods>
+	</SourceCode>
+</AxClass>

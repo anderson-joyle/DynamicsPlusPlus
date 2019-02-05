@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AxClass xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+	<Name>DPPFindFromFields</Name>
+	<SourceCode>
+		<Declaration><![CDATA[
+public class DPPFindFromFields extends DPPFindFrom
+{
+    protected container fields;
+    protected container parms;
+
+}
+]]></Declaration>
+		<Methods>
+			<Method>
+				<Name>setFields</Name>
+				<Source><![CDATA[
+    public void setFields(container _fields)
+    {
+        fields = _fields;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>setParms</Name>
+				<Source><![CDATA[
+    public void setParms(container _parms)
+    {
+        parms = _parms;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>find</Name>
+				<Source><![CDATA[
+    /// <summary>
+    ///
+    /// </summary>
+    /// <returns></returns>
+    public Common find()
+    {
+        Common ret;
+
+        Query    q = new Query();
+        QueryRun qr;
+
+        QueryBuildDataSource qds;
+
+        if (conLen(fields) != conLen(parms))
+        {
+            throw error("Quantity of fields and parms dont match.");
+        }
+
+        qds = q.addDataSource(tableId);
+
+        for (int i = 1;i <= conLen(fields); i++)
+        {
+            FieldId fieldId = fieldName2Id(tableId, conPeek(fields, i));
+
+            if (!fieldId)
+            {
+                throw error(strFmt("Field %1 does not exist.", conPeek(fields, i)));
+            }
+
+            qds.addRange(fieldId).value(queryValue(conPeek(parms, i)));
+
+            this.verbosing(strFmt("Field '%1' mapped to '%2' value.", conPeek(fields, i), conPeek(parms, i)));
+        }
+
+        if (SysQuery::countTotal(new QueryRun(q)) > 1)
+        {
+            throw error("Attempted to fetch more than one record.");
+        }
+
+        qr = new QueryRun(q);
+        qr.next();
+
+        ret = qr.get(tableId);
+
+        return ret;
+    }
+
+]]></Source>
+			</Method>
+		</Methods>
+	</SourceCode>
+</AxClass>
