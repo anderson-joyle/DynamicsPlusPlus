@@ -1,4 +1,4 @@
-# Dynamics++
+![dynamicsplusplus](https://github.com/anderson-joyle/DynamicsPlusPlus/blob/master/DYNAMICS-logo.png)
 Dynamics++ is a set of MSDYN365FO frameworks and utilities written in pure X++ (ideally).
 
 ## Find
